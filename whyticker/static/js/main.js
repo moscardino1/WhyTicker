@@ -91,27 +91,54 @@ async function fetchStockData(symbol) {
     }
 }
 
-// UI Updates
+// Update the UI handling functions
 function getSentimentText(sentiment) {
     const sentiments = {
-        'positive': 'Positive news sentiment is driving the stock',
-        'negative': 'Negative news sentiment is affecting the stock',
-        'neutral': 'News sentiment is neutral'
+        'positive': 'Bullish 📈',
+        'negative': 'Bearish 📉',
+        'neutral': 'Neutral ↔️'
     };
-    return sentiments[sentiment.label] || 'News sentiment is unclear';
+    return sentiments[sentiment.label] || 'Unclear';
+}
+
+function updateUI(data) {
+    // Update stock info
+    document.getElementById('stockName').textContent = data.stock.name;
+    document.getElementById('currentPrice').textContent = `$${data.stock.price}`;
+    
+    const change = data.stock.change;
+    const changeElement = document.getElementById('priceChange');
+    changeElement.textContent = `${change > 0 ? '↑' : '↓'} ${Math.abs(change)}%`;
+    changeElement.className = `text-xl font-semibold ${change > 0 ? 'text-green-400' : 'text-red-400'}`;
+
+    // Update sentiment with context
+    document.getElementById('sentiment').textContent = getSentimentText(data.sentiment);
+    document.getElementById('sentimentSource').textContent = 
+        `Based on analysis of ${data.news.length} recent news articles`;
+
+    // Update chart and news
+    if (data.stock.historical) {
+        updatePriceChart(data.stock.historical);
+    }
+    updateNewsContainer(data.news);
+    
+    // Show results
+    result.classList.remove('hidden');
 }
 
 function updateNewsContainer(news) {
     const newsContainer = document.getElementById('newsContainer');
     newsContainer.innerHTML = news.map(article => `
         <div class="glass-morphism rounded-lg p-4">
-            <div class="flex justify-between items-start mb-2">
-                <h3 class="text-lg font-semibold text-white">${article.title}</h3>
-                <span class="text-sm text-gray-400 ml-2">${formatDate(article.publishedAt)}</span>
+            <div class="flex flex-col gap-2">
+                <span class="text-sm text-gray-400">${formatDate(article.publishedAt)}</span>
+                <h4 class="text-lg font-semibold text-white">${article.title}</h4>
+                <p class="text-gray-300">${article.description}</p>
+                <a href="${article.url}" target="_blank" 
+                   class="text-blue-400 hover:text-blue-300 text-sm inline-block">
+                   Read full article →
+                </a>
             </div>
-            <p class="text-gray-400">${article.description}</p>
-            <a href="${article.url}" target="_blank" 
-               class="text-blue-400 hover:text-blue-300 text-sm mt-2 inline-block">Read more →</a>
         </div>
     `).join('');
 }
@@ -132,22 +159,7 @@ ticker.addEventListener('keypress', async (e) => {
 
         try {
             const data = await fetchStockData(symbol);
-            
-            document.getElementById('stockName').textContent = data.stock.name;
-            
-            const changeElement = document.getElementById('priceChange');
-            const change = data.stock.change;
-            changeElement.textContent = `${change > 0 ? '↑' : '↓'} ${Math.abs(change)}%`;
-            changeElement.className = `text-xl font-semibold ${change > 0 ? 'text-green-400' : 'text-red-400'}`;
-
-            document.getElementById('sentiment').textContent = getSentimentText(data.sentiment);
-
-            if (data.stock.historical) {
-                updatePriceChart(data.stock.historical);
-            }
-
-            updateNewsContainer(data.news);
-            result.classList.remove('hidden');
+            updateUI(data);
         } catch (error) {
             showError(error.message);
         } finally {

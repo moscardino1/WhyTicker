@@ -13,7 +13,7 @@
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-5xl font-bold text-center mb-8 gradient-text">WhyTicker</h1>
         
-        <div class="max-w-2xl mx-auto">
+        <div class="max-w-4xl mx-auto">
             <!-- Search Input -->
             <div class="glass-morphism rounded-lg p-6 mb-8">
                 <input type="text" id="ticker" 
@@ -25,21 +25,42 @@
                 <div id="errorMessage" class="error-message mt-2"></div>
             </div>
 
-            <!-- Results Grid -->
-            <div id="result" class="hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div id="newsContainer" class="space-y-4"></div>
-                    <div>
-                        <div class="glass-morphism rounded-lg p-6 sticky top-4">
-                            <div class="flex justify-between items-center mb-4">
-                                <h2 id="stockName" class="text-2xl font-bold text-white"></h2>
+            <!-- Results -->
+            <div id="result" class="hidden space-y-6">
+                <!-- Stock Overview -->
+                <div class="glass-morphism rounded-lg p-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 id="stockName" class="text-3xl font-bold text-white mb-2"></h2>
+                            <div class="flex items-center gap-4">
+                                <div id="currentPrice" class="text-2xl text-white"></div>
                                 <div id="priceChange" class="text-xl font-semibold"></div>
                             </div>
-                            <div id="sentiment" class="text-lg text-gray-300 mb-4"></div>
-                            <div class="h-[600px] relative">
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-4 w-full md:w-auto">
+                            <h3 class="text-lg font-semibold text-gray-300 mb-2">Market Sentiment</h3>
+                            <div id="sentiment" class="text-lg text-white"></div>
+                            <div id="sentimentSource" class="text-sm text-gray-400 mt-1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart and News Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Chart Section - First on mobile -->
+                    <div class="order-1 md:order-2">
+                        <div class="glass-morphism rounded-lg p-6 sticky top-4">
+                            <h3 class="text-xl font-semibold text-white mb-4">Price History</h3>
+                            <div class="h-[400px] relative">
                                 <canvas id="priceChart"></canvas>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- News Section -->
+                    <div class="order-2 md:order-1">
+                        <h3 class="text-xl font-semibold text-white mb-4">Recent News</h3>
+                        <div id="newsContainer" class="space-y-4"></div>
                     </div>
                 </div>
             </div>
