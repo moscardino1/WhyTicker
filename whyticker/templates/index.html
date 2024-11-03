@@ -1,0 +1,58 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhyTicker | Why Stocks Move</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body class="bg-gray-900 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-5xl font-bold text-center mb-8 gradient-text">WhyTicker</h1>
+        
+        <div class="max-w-2xl mx-auto">
+            <!-- Search Input -->
+            <div class="glass-morphism rounded-lg p-6 mb-8">
+                <input type="text" id="ticker" 
+                       class="w-full bg-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="Enter stock ticker (e.g., AAPL)"
+                       maxlength="10"
+                       pattern="[A-Za-z]+"
+                       required>
+                <div id="errorMessage" class="error-message mt-2"></div>
+            </div>
+
+            <!-- Results Grid -->
+            <div id="result" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id="newsContainer" class="space-y-4"></div>
+                    <div>
+                        <div class="glass-morphism rounded-lg p-6 sticky top-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 id="stockName" class="text-2xl font-bold text-white"></h2>
+                                <div id="priceChange" class="text-xl font-semibold"></div>
+                            </div>
+                            <div id="sentiment" class="text-lg text-gray-300 mb-4"></div>
+                            <div class="h-[600px] relative">
+                                <canvas id="priceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loading" class="hidden">
+                <div class="flex justify-center items-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
